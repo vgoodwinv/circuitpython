@@ -28,12 +28,15 @@ sha, version = build_info.get_version_info()
 
 languages = build_info.get_languages()
 exit_status = 0
+for language in languages:
+    lang_directory = "../bin/{}/".format(language)
+    os.makedirs(lang_directory, exist_ok=True)
 for board in build_boards:
-    bin_directory = "../bin/{}/".format(board)
-    os.makedirs(bin_directory, exist_ok=True)
     board_info = all_boards[board]
 
     for language in languages:
+        bin_directory = "../bin/{}/-{language}/-{board}".format(board=board, language=language)
+        os.makedirs(bin_directory, exist_ok=True)
         start_time = time.monotonic()
         make_result = subprocess.run("make -C ../ports/" + board_info["port"] + " TRANSLATION=" + language + " BOARD=" + board, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         build_duration = time.monotonic() - start_time
